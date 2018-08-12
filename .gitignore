@@ -1,3 +1,5 @@
 node_modules
-ds.store
+dev.js
+.DS_Store
 .vscode
+nameless-temple-11160
