@@ -34,26 +34,23 @@ passport.use(
         {
             clientID: keys.googleClientID,
             clientSecret: keys.googleClientSecret,
-            callbackURL: '/auth/google/callback'
+            callbackURL: '/auth/google/callback',
+            proxy: true // for the callback to return an https, instead of http, we have to tell google that we are okay with the request going through a proxy
         }, 
-        (accessToken, refreshToken, profile, done )=> { // callback function
+        async (accessToken, refreshToken, profile, done )=> { // callback function
             // findOne - returns the first search record that matches the criteria
-            User.findOne({ googleId: profile.id }) // everytime we reach out to the DB, an asynchronous action is being initiated
+            const existingUser = await User.findOne({ googleId: profile.id }) // everytime we reach out to the DB, an asynchronous action is being initiated
             // The query returns a promise, which is a tool that we use in JS for handling async code
-                .then((existingUser) => {
-                    if (existingUser) {
-                        // we already have a record with the given profile ID
-                        
-                        // if we found a user inside a users' collection, this means everything went good
-                        // -> thus, a 'null' argument is passed
-                        done(null, existingUser); // 'done' - to tell passport we are all complete
-                    } else {
-                        // we dont have a user record with this ID, make a new one
-                        new User({ googleId: profile.id })
-                            .save() // When we call save, it will take this record (model instance) and save it to the DB
-                            .then(user => done(null, user));
-                    }
-                });
+            if (existingUser) {
+                // we already have a record with the given profile ID
+                done(null, existingUser);
+                // if we found a user inside a users' collection, this means everything went good
+                // -> thus, a 'null' argument is passed                        done(null, existingUser); // 'done' - to tell passport we are all complete
+            } else {
+                // we dont have a user record with this ID, make a new one
+                const user = await new User({ googleId: profile.id }).save() // When we call save, it will take this record (model instance) and save it to the DB
+                done(null,user);
+           }
         }
     )
 );
