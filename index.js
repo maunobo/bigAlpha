@@ -31,10 +31,6 @@ require('./routes/authRoutes')(app);
 // const authRoutes = require('./routes/authRoutes');
 // authRoutes(app);
 
-// callback function
-// https://accounts.google.com/o/oauth2/v2/auth?
-// response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Fauth%2Fgoogle%2Fcallback&scope=profile%20email&client_id=23376650779-ekh1cdfqh71di9eoq2ci4djdqgc6lhm0.apps.googleusercontent.com
-
 // NOT EXACTLY WHEN THIS CHANGED - edit 20:30 Sunday
 // // Route Handler
 // const handler = (req, res) => {
